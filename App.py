@@ -35,7 +35,7 @@ with st.container():
 # Mostrar el historial de la conversación
 for mensaje in st.session_state.chat:
     with st.chat_message(mensaje["rol"]):
-        st.markdown(mensaje["contenido"])
+        st.markdown(mensaje["contenido"], unsafe_allow_html=True)
 
 # Entrada del usuario
 prompt = st.chat_input("¿Derivo al paciente si tiene disnea y ECG anómalo.?")
@@ -59,15 +59,14 @@ if prompt:
 
                     # --- CORRECCIÓN DE FORMATO ---
                     recommendation = data["recommendation"].strip()
-                    # Sustituir saltos de línea por <br> para que se muestre como texto normal
                     recommendation = recommendation.replace("\n\n", "<br><br>")
                     recommendation = recommendation.replace("\n", "<br>")
 
                     # Mostrar recomendación con HTML seguro
                     st.markdown(recommendation, unsafe_allow_html=True)
 
-                    # Guardar en historial (contenido original, sin HTML)
-                    st.session_state.chat.append({"rol": "assistant", "contenido": data["recommendation"]})
+                    # Guardar en historial la recomendación formateada
+                    st.session_state.chat.append({"rol": "assistant", "contenido": recommendation})
 
                     # Mostrar fragmentos y guías
                     with st.expander("📄 Fragmentos de contexto utilizados"):
